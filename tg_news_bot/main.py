@@ -24,7 +24,14 @@ news_mgr = NewsManager(db)
 
 async def check_news(bot: Bot):
     logger.info("Checking news sources…")
-    articles = news_mgr.process_new()
+    import asyncio
+    try:
+        articles = await asyncio.wait_for(
+            asyncio.to_thread(news_mgr.process_new), timeout=120
+        )
+    except asyncio.TimeoutError:
+        logger.warning("News check timed out")
+        return
     if not articles:
         logger.info("No new articles found")
         return

@@ -185,7 +185,18 @@ async def cmd_scan(message: Message):
         await message.answer("Ошибка: менеджер новостей не инициализирован.")
         return
     await message.answer("🔍 Ищу новые новости...")
-    articles = news_manager.process_new()
+    try:
+        import asyncio
+        articles = await asyncio.wait_for(
+            asyncio.to_thread(news_manager.process_new), timeout=120
+        )
+    except asyncio.TimeoutError:
+        await message.answer("⏱ Слишком долго. Попробуй ещё раз.")
+        return
+    except Exception as e:
+        logger.error("Scan error: %s", e)
+        await message.answer(f"❌ Ошибка: {e}")
+        return
     if not articles:
         await message.answer("Новых новостей нет.")
         return

@@ -130,7 +130,9 @@ class NewsManager:
         articles = []
         for source in SOURCES:
             try:
-                feed = feedparser.parse(source["url"])
+                import httpx as _httpx
+                resp = _httpx.get(source["url"], timeout=12, follow_redirects=True)
+                feed = feedparser.parse(resp.text)
                 for entry in feed.entries[:15]:
                     title = entry.get("title", "")
                     link = entry.get("link", "")
