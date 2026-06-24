@@ -110,6 +110,7 @@ class AIWriter:
             "4. Если уместно — связь с Россией, политикой, бизнесом\n\n"
             "Хештеги: #IT #AI или конкретнее.\n\n"
             f"Новость:\nЗаголовок: {title}\nОписание: {summary}\n\nНапиши пост:"
+        )
         try:
             response = self.client.models.generate_content(
                 model="gemini-2.0-flash", contents=prompt
